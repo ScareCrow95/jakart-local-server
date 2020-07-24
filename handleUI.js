@@ -4,7 +4,9 @@ const destinations = require('./destinations')
 
 module.exports = (io) => {
   uiOutgoingEvents.map((x) => {
-    eventManager.on(x, (data) => uiSocket?.emit(x, data))
+    eventManager.on(x, (data) => {
+      if (uiSocket) uiSocket.emit(x, data)
+    })
   })
 
   io.of('/ui').on('connection', (socket) => {
