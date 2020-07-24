@@ -6,7 +6,7 @@ const cartState = require('./cartState')
 module.exports = (io) => {
   rosOutgoingEvents.map((x) => {
     eventManager.on(x, (data) => {
-      if (rosSocket) rosSocket.emit(x, data)
+      io.of('/ros').emit(x, data)
     })
   })
 
