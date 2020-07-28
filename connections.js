@@ -22,20 +22,19 @@ module.exports = {
   ],
   rosIncomingEvents: [
     'gps',
-    'passenger-unsafe',
-    'transit-start',
+    // 'passenger-unsafe',
+    // 'transit-start',
     'arrived',
-    'audio',
+    // 'audio',
     'passenger-video',
     'cart-video',
-    'passenger-exit',
+    // 'passenger-exit',
   ],
   rosOutgoingEvents: [
-    'transit-await',
+    // 'transit-await',
     'pull-over',
     'resume-driving',
-    'destination',
-    'summon',
+    'drive-to',
   ],
 }
 

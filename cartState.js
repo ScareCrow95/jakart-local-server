@@ -1,12 +1,13 @@
 global.CARTID = require('./connections').cartID
 const fs = require('fs')
+const destinations = require('./destinations')
 
 let cartState
 global.CARTSTATE = () => cartState
 
 const io = require('socket.io-client')
-const socket = io('http://35.238.125.238:8020/cart')
-// const socket = io('http://localhost:8020/cart')
+// const socket = io('http://35.238.125.238:8020/cart')
+const socket = io('http://localhost:8020/cart')
 
 module.exports.init = () => {
   socket.on('connect', () => {
@@ -30,19 +31,28 @@ module.exports.init = () => {
   })
 
   socket.on('summon', (data) => {
-    console.log(data)
     cartState.userId = data.id
     cartState.latitude = data.latitude
     cartState.longitude = data.longitude
     cartState.state = 'summon-start'
     writeState()
+    eventManager.emit('drive-to', data)
     eventManager.emit('summon', data)
     eventManager.emit('ui-init', cartState)
   })
 
   eventManager.on('destination', (name) => {
-    cartState.destination = name
-    writeState()
+    if (destinations[name]) {
+      cartState.destination = name
+      setTimeout(() => {
+        cartState.state = 'transit-start'
+        eventManager.emit('drive-to', JSON.stringify(destinations[name]))
+        eventManager.emit('transit-start', name)
+        socket.emit('transit-start', cartState)
+      }, 4)
+      // might need to remove json.stringify
+      writeState()
+    }
   })
 
   eventManager.on('arrived', () => {
@@ -50,19 +60,18 @@ module.exports.init = () => {
       cartState.state = 'summon-finish'
     } else {
       cartState.state = 'transit-end'
+      setTimeout(() => {
+        cartState.state = 'idle'
+        cartState.userId = ''
+        cartState.destination = ''
+        writeState()
+        eventManager.emit('ui-init', cartState)
+        socket.emit('passenger-exit')
+      }, 4000)
     }
     writeState()
     eventManager.emit('ui-init', cartState)
     socket.emit(cartState.state)
-  })
-
-  eventManager.on('passenger-exit', () => {
-    cartState.state = 'idle'
-    cartState.userId = ''
-    cartState.destination = ''
-    writeState()
-    eventManager.emit('ui-init', cartState)
-    socket.emit('passenger-exit')
   })
 
   cartState = JSON.parse(fs.readFileSync('../cart.json', 'utf-8'))
