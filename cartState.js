@@ -67,7 +67,7 @@ module.exports.init = () => {
         writeState()
         eventManager.emit('ui-init', cartState)
         socket.emit('passenger-exit')
-      }, 4000)
+      }, 8000)
     }
     writeState()
     eventManager.emit('ui-init', cartState)
