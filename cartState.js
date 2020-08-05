@@ -48,7 +48,7 @@ module.exports.init = () => {
         cartState.state = 'transit-start'
         eventManager.emit('drive-to', JSON.stringify(destinations[name]))
         eventManager.emit('transit-start', name)
-        socket.emit('transit-start', cartState)
+        socket.emit('ui-init', cartState)
       }, 4)
       // might need to remove json.stringify
       writeState()

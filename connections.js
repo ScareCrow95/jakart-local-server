@@ -8,11 +8,12 @@ module.exports = {
     'summon-cancel',
     'summon-finish',
     'gps', //change
-    'transit-start', // change
-    'transit-end',
+    // 'transit-start', // change
+    // 'transit-end',
     'audio',
     'reset-client', //change
     'passenger-exit',
+    // 'passenger-video',
   ],
   uiIncomingEvents: [
     'destination', //

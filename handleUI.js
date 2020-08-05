@@ -2,10 +2,6 @@ let uiSocket
 const { uiOutgoingEvents, uiIncomingEvents } = require('./connections.js')
 const destinations = require('./destinations')
 
-const destinationsArr = Object.keys(destinations).map((x) => {
-  return { name: x }
-})
-
 module.exports = (io) => {
   uiOutgoingEvents.map((x) => {
     eventManager.on(x, (data) => {
@@ -13,9 +9,13 @@ module.exports = (io) => {
     })
   })
 
+  // eventManager.on('passenger-video', (data) => {
+  //   io.of('/ui').emit('passenger-video', data.toString('utf8'))
+  // })
+
   io.of('/ui').on('connection', (socket) => {
     socket.emit('ui-init', CARTSTATE())
-    socket.emit('get-destinations', destinationsArr)
+    socket.emit('get-destinations', destinations)
     uiSocket = socket
 
     uiIncomingEvents.map((x) => {
