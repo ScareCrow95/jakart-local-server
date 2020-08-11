@@ -7,7 +7,7 @@ module.exports = {
     'passenger-unsafe',
     'summon-cancel',
     'summon-finish',
-    'gps', //change
+    // 'gps',
     // 'transit-start', // change
     // 'transit-end',
     'audio',

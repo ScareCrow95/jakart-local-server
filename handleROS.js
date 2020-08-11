@@ -16,7 +16,6 @@ module.exports = (io) => {
       socket.on(x, (data) => eventManager.emit(x, data))
     })
     cartState.rosConnect()
-
     socket.on('disconnect', () => {
       cartState.rosDisconnect()
     })
