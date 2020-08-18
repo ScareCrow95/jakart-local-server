@@ -3,19 +3,19 @@ module.exports = {
     latitude: 38.433859,
     longitude: -78.862175,
   },
-  stop1: {
+  cafe: {
     latitude: 38.433406,
     longitude: -78.86157,
   },
-  stop2: {
+  clinic: {
     latitude: 38.433125,
     longitude: -78.860713,
   },
-  stop3: {
+  mall: {
     latitude: 38.432923,
     longitude: -78.860962,
   },
-  stop4: {
+  movie: {
     latitude: 38.432637,
     longitude: -78.861113,
   },

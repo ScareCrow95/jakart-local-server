@@ -62,6 +62,7 @@ module.exports.init = () => {
       cartState.state = 'transit-end'
       setTimeout(() => {
         cartState.state = 'idle'
+        cartState.pullover = false
         cartState.userId = ''
         cartState.destination = ''
         writeState()
@@ -75,6 +76,13 @@ module.exports.init = () => {
   })
 
   cartState = JSON.parse(fs.readFileSync('../cart.json', 'utf-8'))
+
+  if (
+    cartState.state === 'summon-start' ||
+    cartState.state === 'transit-start'
+  ) {
+    eventManager.emit('drive-to', cartState)
+  }
 
   return cartState
 }
