@@ -12,7 +12,7 @@ global.eventManager = new events()
   cartState.init()
   handleUI(io)
   handleROSLib()
-  //handleROS(io)
+  //handleROS(io) // socket io
   server.listen(8029, () => {
     console.log('local-socket-server started at 8021')
   })

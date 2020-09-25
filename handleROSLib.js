@@ -32,7 +32,7 @@ ros.on('close', function () {
 function subscribeToTopics() {
   new ROSLIB.Topic({
     ros: ros,
-    name: '/arrived...',
+    name: '/arrived',
     messageType: 'std_msgs/String',
   }).subscribe((x) => {
     eventManager.emit('arrived')
@@ -40,11 +40,29 @@ function subscribeToTopics() {
 
   new ROSLIB.Topic({
     ros: ros,
-    name: '/gps....',
-    messageType: 'std_msgs/String',
+    name: '/gps_send',
+    messageType: 'navigation_msgs/LatLongPoint',
   }).subscribe((x) => {
-    const data = { latitude: x.data.latitude, longitude: x.data.longitude }
+    const data = { latitude: x.latitude, longitude: x.longitude }
     eventManager.emit('gps', data)
+  })
+
+  new ROSLIB.Topic({
+    ros: ros,
+    name: '/gps_global_path',
+    messageType: 'navigation_msgs/LatLongArray',
+  }).subscribe((x) => {
+    console.log(x);
+    eventManager.emit('path', x)
+  })
+
+
+  new ROSLIB.Topic({
+    ros: ros,
+    name: '/eta',
+    messageType: 'std_msgs/UInt64',
+  }).subscribe((x) => {
+    eventManager.emit('eta', x.data)
   })
 }
 
