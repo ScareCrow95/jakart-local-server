@@ -1,5 +1,3 @@
-let rosSocket
-
 const { rosIncomingEvents, rosOutgoingEvents } = require('./connections.js')
 const cartState = require('./cartState')
 
