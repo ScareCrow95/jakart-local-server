@@ -7,6 +7,8 @@ const ros = new ROSLIB.Ros({
 
 module.exports = () => {
   eventManager.on('drive-to', (data) => {
+    console.log(`Latitude: ${data.latitude} | Longitude: ${data.longitude}`);
+    
     SendDriveRequest(data.latitude, data.longitude)
   })
 }
@@ -52,7 +54,6 @@ function subscribeToTopics() {
     name: '/gps_global_path',
     messageType: 'navigation_msgs/LatLongArray',
   }).subscribe((x) => {
-    console.log(x);
     eventManager.emit('path', x)
   })
 
@@ -67,6 +68,8 @@ function subscribeToTopics() {
 }
 
 function SendDriveRequest(latitude, longitude) {
+  
+  
   const topic = new ROSLIB.Topic({
     ros: ros,
     name: '/gps_request',

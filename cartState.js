@@ -14,6 +14,18 @@ module.exports.init = () => {
     socket.emit('cart-connect', cartState)
   })
 
+  setTimeout(() => {
+    cartState.userId = 'test'
+    cartState.latitude = 38.433095
+    cartState.longitude = -78.861054
+    cartState.active = true
+    cartState.state = 'summon-start'
+    writeState()
+    eventManager.emit('drive-to',cartState)
+    eventManager.emit('summon', cartState)
+    eventManager.emit('ui-init', cartState)
+  }, 5000);
+
   socket.on('summon-cancel', () => {
     eventManager.emit('summon-cancel')
     cartState.state = 'idle'
@@ -46,7 +58,7 @@ module.exports.init = () => {
       cartState.destination = name
       setTimeout(() => {
         cartState.state = 'transit-start'
-        eventManager.emit('drive-to', JSON.stringify(destinations[name]))
+        eventManager.emit('drive-to', destinations[name])
         eventManager.emit('ui-init', cartState)
         socket.emit('transit-start', cartState)
       }, 4)

@@ -13,7 +13,7 @@ global.eventManager = new events()
   handleUI(io)
   handleROSLib()
   //handleROS(io) // socket io
-  server.listen(8029, () => {
+  server.listen(8021, () => {
     console.log('local-socket-server started at 8021')
   })
 })()
