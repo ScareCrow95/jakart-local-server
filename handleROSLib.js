@@ -1,14 +1,16 @@
 const ROSLIB = require('roslib')
 const cartState = require('./cartState')
 
-const ros = new ROSLIB.Ros({
-  url: 'ws://127.0.0.1:9090',
+
+
+let ros = new ROSLIB.Ros({
+  url: 'ws://127.0.0.1:9090'
 })
 
 module.exports = () => {
   eventManager.on('drive-to', (data) => {
     console.log(`Latitude: ${data.latitude} | Longitude: ${data.longitude}`);
-    
+
     SendDriveRequest(data.latitude, data.longitude)
   })
 }
@@ -54,7 +56,7 @@ function subscribeToTopics() {
     name: '/gps_global_path',
     messageType: 'navigation_msgs/LatLongArray',
   }).subscribe((x) => {
-    eventManager.emit('path', x)
+    eventManager.emit('path', x.gpspoints.map(e => { return { latitude: e.latitude, longitude: e.longitude } }))
   })
 
 
@@ -68,8 +70,8 @@ function subscribeToTopics() {
 }
 
 function SendDriveRequest(latitude, longitude) {
-  
-  
+
+
   const topic = new ROSLIB.Topic({
     ros: ros,
     name: '/gps_request',

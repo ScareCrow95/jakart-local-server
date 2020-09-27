@@ -12,7 +12,7 @@ module.exports = (io) => {
   })
 
   eventManager.on('gps', (data) => {
-    console.log(data)
+    // console.log(data)
     io.of('/ui').emit('gps', data)
   })
 
