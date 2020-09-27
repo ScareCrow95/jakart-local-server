@@ -12,31 +12,9 @@ module.exports = (io) => {
   })
 
   eventManager.on('gps', (data) => {
-    console.log(data);
+    console.log(data)
     io.of('/ui').emit('gps', data)
   })
-
-  // var numDeltas = 100
-  // var delay = 10 //milliseconds
-  // var i = 0
-  // var deltaLat
-  // var deltaLng
-  // function transition(result) {
-  //   i = 0
-  //   deltaLat = (result.latitude - position[0]) / numDeltas
-  //   deltaLng = (result.longitude - position[1]) / numDeltas
-  //   moveMarker()
-  // }
-
-  // function moveMarker() {
-  //   position[0] += deltaLat
-  //   position[1] += deltaLng
-  //   io.of('/ui').emit('gps', { latitude: position[0], longitude: position[1] })
-  //   if (i != numDeltas) {
-  //     i++
-  //     timeoutGPS = setTimeout(moveMarker, delay)
-  //   }
-  // }
 
   // eventManager.on('passenger-video', (data) => {
   //   io.of('/ui').emit('passenger-video', data.toString('utf8'))

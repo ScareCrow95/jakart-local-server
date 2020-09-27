@@ -21,10 +21,11 @@ module.exports.init = () => {
     cartState.active = true
     cartState.state = 'summon-start'
     writeState()
-    eventManager.emit('drive-to',cartState)
+    eventManager.emit('drive-to', cartState)
+    eventManager.emit('path', Object.values(destinations))
     eventManager.emit('summon', cartState)
     eventManager.emit('ui-init', cartState)
-  }, 5000);
+  }, 1000)
 
   socket.on('summon-cancel', () => {
     eventManager.emit('summon-cancel')
