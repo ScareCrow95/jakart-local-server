@@ -10,21 +10,31 @@ const socket = io('http://35.238.125.238:8020/cart')
 // const socket = io('http://localhost:8020/cart')
 
 module.exports.init = () => {
+  eventManager.on('gps', (data) => {
+    socket.emit('gps', data)
+  })
+
+  eventManager.on('path', (data) => {
+    socket.emit('path', data)
+  })
+
   socket.on('connect', () => {
     socket.emit('cart-connect', cartState)
   })
 
-  setTimeout(() => {
-    cartState.userId = 'test'
-    cartState.latitude = 38.433095
-    cartState.longitude = -78.861054
-    cartState.active = true
-    cartState.state = 'summon-start'
-    writeState()
-    eventManager.emit('drive-to', cartState)
-    eventManager.emit('summon', cartState)
-    eventManager.emit('ui-init', cartState)
-  }, 2000)
+  // setTimeout(() => {
+  //   cartState.userId = 'test'
+  //   cartState.latitude = 38.433095
+  //   cartState.longitude = -78.861054
+  //   cartState.active = true
+  //   cartState.state = 'summon-start'
+  //   writeState()
+  //   eventManager.emit('drive-to', cartState)
+  //   eventManager.emit('summon', cartState)
+  //   eventManager.emit('ui-init', cartState)
+  //   eventManager.emit('path', Object.values(destinations))
+  //   socket.emit('path', Object.values(destinations))
+  // }, 2000)
 
   socket.on('summon-cancel', () => {
     eventManager.emit('summon-cancel')
@@ -60,6 +70,7 @@ module.exports.init = () => {
         cartState.state = 'transit-start'
         eventManager.emit('drive-to', destinations[name])
         eventManager.emit('ui-init', cartState)
+        socket.emit('destination', name)
         socket.emit('transit-start', cartState)
       }, 4)
       // might need to remove json.stringify
