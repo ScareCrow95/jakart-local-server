@@ -1,15 +1,16 @@
 const ROSLIB = require('roslib')
 const cartState = require('./cartState')
+const distance = require('gps-distance')
 
-
+const lastGPS = { latitude: 0, longitude: 0 }
 
 let ros = new ROSLIB.Ros({
-  url: 'ws://127.0.0.1:9090'
+  url: 'ws://127.0.0.1:9090',
 })
 
 module.exports = () => {
   eventManager.on('drive-to', (data) => {
-    console.log(`Latitude: ${data.latitude} | Longitude: ${data.longitude}`);
+    console.log(`Latitude: ${data.latitude} | Longitude: ${data.longitude}`)
 
     SendDriveRequest(data.latitude, data.longitude)
   })
@@ -48,7 +49,20 @@ function subscribeToTopics() {
     messageType: 'navigation_msgs/LatLongPoint',
   }).subscribe((x) => {
     const data = { latitude: x.latitude, longitude: x.longitude }
-    eventManager.emit('gps', data)
+    if (lastGPS.latitude !== 0) {
+      const result = distance(
+        lastGPS.latitude,
+        lastGPS.longitude,
+        x.latitude,
+        x.longitude
+      )
+      if (result < 0.008) {
+        eventManager.emit('gps', data)
+        lastGPS = data
+      } else {
+        console.log('GPS Delta too big: ' + result + 'km')
+      }
+    } else eventManager.emit('gps', data)
   })
 
   new ROSLIB.Topic({
@@ -56,9 +70,13 @@ function subscribeToTopics() {
     name: '/gps_global_path',
     messageType: 'navigation_msgs/LatLongArray',
   }).subscribe((x) => {
-    eventManager.emit('path', x.gpspoints.map(e => { return { latitude: e.latitude, longitude: e.longitude } }))
+    eventManager.emit(
+      'path',
+      x.gpspoints.map((e) => {
+        return { latitude: e.latitude, longitude: e.longitude }
+      })
+    )
   })
-
 
   new ROSLIB.Topic({
     ros: ros,
@@ -70,8 +88,6 @@ function subscribeToTopics() {
 }
 
 function SendDriveRequest(latitude, longitude) {
-
-
   const topic = new ROSLIB.Topic({
     ros: ros,
     name: '/gps_request',
