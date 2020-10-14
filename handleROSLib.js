@@ -11,10 +11,14 @@ let ros = new ROSLIB.Ros({
 module.exports = () => {
   eventManager.on('drive-to', (data) => {
     console.log(`Latitude: ${data.latitude} | Longitude: ${data.longitude}`)
-
+    pulloverHelper(false)
     SendDriveRequest(data.latitude, data.longitude)
   })
 }
+
+eventManager.on('pullover', (status) => {
+  pulloverHelper(status)
+})
 
 ros.on('connection', function () {
   console.log('Connected to websocket server.')
@@ -33,6 +37,20 @@ ros.on('close', function () {
   console.log('Connection to websocket server closed.')
   cartState.rosDisconnect()
 })
+
+function pulloverHelper(status) {
+  const topic = new ROSLIB.Topic({
+    ros: ros,
+    name: '/emergency_stop',
+    messageType: 'navigation_msgs/EmergencyStop',
+  })
+  const msg = new ROSLIB.Message({
+    sender_id: { data: 'server' },
+    emergency_stop: status,
+  })
+  console.log(msg)
+  topic.publish(msg)
+}
 
 function subscribeToTopics() {
   new ROSLIB.Topic({

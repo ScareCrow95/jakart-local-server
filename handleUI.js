@@ -12,7 +12,6 @@ module.exports = (io) => {
   })
 
   eventManager.on('gps', (data) => {
-    // console.log(data)
     io.of('/ui').emit('gps', data)
   })
 
@@ -24,7 +23,7 @@ module.exports = (io) => {
     socket.emit('ui-init', CARTSTATE())
     socket.emit('get-destinations', destinations)
     uiSocket = socket
-
+    socket.on('pullover', (x) => console.log('pullover: ' + x))
     uiIncomingEvents.map((x) => {
       socket.on(x, (data) => eventManager.emit(x, data))
     })

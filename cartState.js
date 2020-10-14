@@ -78,6 +78,11 @@ module.exports.init = () => {
     }
   })
 
+  eventManager.on('pullover', (x) => {
+    cartState.pullover = x
+    writeState()
+  })
+
   eventManager.on('arrived', () => {
     if (cartState.destination === '') {
       cartState.state = 'summon-finish'

@@ -19,7 +19,7 @@ module.exports = {
   uiIncomingEvents: [
     'destination', //
     'transit-await',
-    'pull-over',
+    'pullover',
     'resume-driving',
   ],
   rosIncomingEvents: [
