@@ -5,11 +5,15 @@ const destinations = require('./destinations')
 let cartState
 global.CARTSTATE = () => cartState
 
+let pose = {}
+
 const io = require('socket.io-client')
 const socket = io('http://35.238.125.238:8020/cart')
 // const socket = io('http://localhost:8020/cart')
 
 module.exports.init = () => {
+  eventManager.on('pose', (x) => (pose = x))
+
   eventManager.on('gps', (data) => {
     socket.emit('gps', data)
   })
@@ -89,14 +93,22 @@ module.exports.init = () => {
     } else {
       cartState.state = 'transit-end'
       setTimeout(() => {
-        cartState.state = 'idle'
-        cartState.pullover = false
-        cartState.userId = ''
-        cartState.destination = ''
-        writeState()
-        eventManager.emit('ui-init', cartState)
-        socket.emit('passenger-exit')
-      }, 8000)
+        let interval = null
+        interval = setInterval(() => {
+          if (!x.passsenger) {
+            clearInterval(interval)
+            cartState.state = 'idle'
+            cartState.pullover = false
+            cartState.userId = ''
+            cartState.destination = ''
+            writeState()
+            eventManager.emit('ui-init', cartState)
+            socket.emit('passenger-exit')
+          } else {
+            console.log('passenger still in')
+          }
+        }, 1000)
+      }, 3000)
     }
     writeState()
     eventManager.emit('ui-init', cartState)

@@ -4,6 +4,7 @@ module.exports = {
   uiOutgoingEvents: [
     'ui-init',
     'summon',
+    'pose',
     'passenger-unsafe',
     'summon-cancel',
     'summon-finish',

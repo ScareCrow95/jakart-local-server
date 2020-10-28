@@ -4,6 +4,8 @@ const distance = require('gps-distance')
 
 const lastGPS = { latitude: 0, longitude: 0 }
 
+let isPulledOver = false
+
 let ros = new ROSLIB.Ros({
   url: 'ws://127.0.0.1:9090',
 })
@@ -15,6 +17,25 @@ module.exports = () => {
     SendDriveRequest(data.latitude, data.longitude)
   })
 }
+
+eventManager.on('pose', (x) => {
+  if (
+    CARTSTATE().state === 'transit-start' &&
+    (!x.passenger || !x.safe) &&
+    !isPulledOver
+  ) {
+    pulloverHelper(true)
+  }
+
+  if (
+    CARTSTATE().state === 'transit-start' &&
+    x.passenger &&
+    x.safe &&
+    isPulledOver
+  ) {
+    pulloverHelper(false)
+  }
+})
 
 eventManager.on('pullover', (status) => {
   pulloverHelper(status)
@@ -41,7 +62,7 @@ ros.on('close', function () {
 function pulloverHelper(status) {
   const topic = new ROSLIB.Topic({
     ros: ros,
-    name: '/emergency_stop',
+    name: '/request_stop',
     messageType: 'navigation_msgs/EmergencyStop',
   })
   const msg = new ROSLIB.Message({
@@ -49,6 +70,7 @@ function pulloverHelper(status) {
     emergency_stop: status,
   })
   console.log(msg)
+  isPulledOver = status
   topic.publish(msg)
 }
 
