@@ -18,6 +18,7 @@ module.exports = {
     // 'passenger-video',
   ],
   uiIncomingEvents: [
+    'change-destination',
     'destination', //
     'transit-await',
     'pullover',

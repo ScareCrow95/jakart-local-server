@@ -18,6 +18,10 @@ module.exports = () => {
   })
 }
 
+eventManager.on('change-destination', () => {
+  pulloverHelper(true)
+})
+
 eventManager.on('pose', (x) => {
   if (
     CARTSTATE().state === 'transit-start' &&
@@ -96,7 +100,7 @@ function subscribeToTopics() {
         x.latitude,
         x.longitude
       )
-      if (result < 0.008) {
+      if (result < 0.001) {
         eventManager.emit('gps', data)
         lastGPS = data
       } else {

@@ -22,6 +22,11 @@ module.exports.init = () => {
     socket.emit('path', data)
   })
 
+  eventManager.on('change-destination', () => {
+    cartState.state = 'summon-finish'
+    writeState()
+  })
+
   socket.on('connect', () => {
     socket.emit('cart-connect', cartState)
   })
@@ -115,7 +120,17 @@ module.exports.init = () => {
     socket.emit(cartState.state)
   })
 
-  cartState = JSON.parse(fs.readFileSync('../cart.json', 'utf-8'))
+  // cartState = JSON.parse(fs.readFileSync('../cart.json', 'utf-8'))
+  cartState = {
+    destination: '',
+    active: true,
+    state: 'summon-finish',
+    _id: 'jakart',
+    userId: 'lskjdfh',
+    latitude: 38.433095,
+    longitude: -78.861054,
+    pullover: false,
+  }
 
   if (
     cartState.state === 'summon-start' ||
