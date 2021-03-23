@@ -4,7 +4,7 @@ const destinations = require('./destinations')
 
 let cartState
 global.CARTSTATE = () => cartState
-
+const pose = { passenger: false, safe: false }
 let pose = {}
 
 const io = require('socket.io-client')
@@ -20,6 +20,11 @@ module.exports.init = () => {
 
   eventManager.on('path', (data) => {
     socket.emit('path', data)
+  })
+
+  eventManager.on('pose', (x) => {
+    console.log('got pose')
+    pose = x
   })
 
   eventManager.on('change-destination', () => {
@@ -98,9 +103,11 @@ module.exports.init = () => {
     } else {
       cartState.state = 'transit-end'
       setTimeout(() => {
+        console.log('checking if passenger still in cart . . .')
         let interval = null
         interval = setInterval(() => {
-          if (!x.passsenger) {
+          console.log(pose)
+          if (!pose.passsenger) {
             clearInterval(interval)
             cartState.state = 'idle'
             cartState.pullover = false
@@ -108,6 +115,7 @@ module.exports.init = () => {
             cartState.destination = ''
             writeState()
             eventManager.emit('ui-init', cartState)
+            console.log('passenger got out exiting still in')
             socket.emit('passenger-exit')
           } else {
             console.log('passenger still in')

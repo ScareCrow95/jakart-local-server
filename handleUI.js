@@ -11,14 +11,6 @@ module.exports = (io) => {
     })
   })
 
-  eventManager.on('gps', (data) => {
-    io.of('/ui').emit('gps', data)
-  })
-
-  // eventManager.on('passenger-video', (data) => {
-  //   io.of('/ui').emit('passenger-video', data.toString('utf8'))
-  // })
-
   io.of('/ui').on('connection', (socket) => {
     socket.emit('ui-init', CARTSTATE())
     socket.emit('get-destinations', destinations)

@@ -89,6 +89,15 @@ function subscribeToTopics() {
 
   new ROSLIB.Topic({
     ros: ros,
+    name: '/cart_empty_safe',
+    messageType: 'std_msgs/String',
+  }).subscribe((x) => {
+    console.log(x)
+    eventManager.emit('pose', JSON.parse(x))
+  })
+
+  new ROSLIB.Topic({
+    ros: ros,
     name: '/gps_send',
     messageType: 'navigation_msgs/LatLongPoint',
   }).subscribe((x) => {
